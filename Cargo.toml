@@ -1,0 +1,38 @@
+[package]
+name = "tps6572x"
+version = "0.1.0"
+edition = "2021"
+authors = ["xgroleau <grox2901@usherbrooke.ca>"]
+repository = "https://github.com/xgroleau/tps6572x-rs"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/xgroleau/tps6572x-rs"
+description = "Platform-agnostic Rust driver for the TI tps6572x power supply."
+documentation = "https://docs.rs/tps6572x"
+readme = "README.md"
+keywords = ["i2c", "twi", "driver", "embedded-hal-driver"]
+categories = ["embedded", "hardware-support", "no-std"]
+
+exclude = [
+    "flake.nix",
+    "flake.lock",
+    ".envrc",
+]
+
+[dependencies]
+# TODO: Migrate to embedded-hal repo
+embedded-hal = { version = "1.0.0-alpha.7", git = "https://github.com/embassy-rs/embedded-hal", branch = "embassy2" }
+bit = "0.1.1"
+defmt = { version = "0.3", optional = true }
+
+[dev-dependencies]
+cortex-m = "0.7.3"
+cortex-m-rt = "0.7.0"
+embassy = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy",  features = ["defmt", "nightly", "unstable-traits"] }
+embassy-nrf = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy",  features = ["defmt", "nrf52840", "time-driver-rtc1", "gpiote", "unstable-traits"] }
+
+defmt = "0.3"
+defmt-rtt = "0.3"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+
+[profile.release]
+lto = true
