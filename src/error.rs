@@ -3,4 +3,7 @@
 pub enum Error<I2cError> {
     /// Internal i2c error
     I2c(I2cError),
+
+    /// Cannot decode value
+    UnexpectedValue,
 }
