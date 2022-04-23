@@ -1,5 +1,10 @@
 use modular_bitfield::prelude::*;
 
+trait Register {
+    const ADDRESS: RegisterAddress;
+}
+trait WritableRegister: Register {}
+
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub enum RegisterAddress {
@@ -7,7 +12,7 @@ pub enum RegisterAddress {
     BatteryChargerStatus = 0x01,
 
     /// CHGCONFIGG0
-    BatteryChargerConfigControl0 = 0x02,
+    ChargerConfigControl0 = 0x02,
 
     /// CHGCONFIGG1
     BatteryChargerConfigControl1 = 0x03,
@@ -19,7 +24,7 @@ pub enum RegisterAddress {
     BatteryChargerConfigControl3 = 0x05,
 
     /// CHGSTATE
-    BatteryChargeState = 0x06,
+    ChargerStatus = 0x06,
 
     /// DEFDCDC1
     DCDCSettingControl = 0x07,
@@ -68,12 +73,15 @@ pub struct ChargerStatus {
     pub __: B1,
 
     /// CH_THLOOP
+    #[skip(setters)]
     pub thermal_loop_active: bool,
 
     /// CH_PGOOD
+    #[skip(setters)]
     pub power_source_ok: bool,
 
     /// CH_ACTIVE
+    #[skip(setters)]
     pub charger_active: bool,
 
     /// Bit 4 skipped
@@ -81,13 +89,19 @@ pub struct ChargerStatus {
     pub __: B1,
 
     /// OVP
+    #[skip(setters)]
     pub over_voltage_protection: bool,
 
     /// TS_COLD
+    #[skip(setters)]
     pub temp_low: bool,
 
     /// TS_HOT
+    #[skip(setters)]
     pub temp_high: bool,
+}
+impl Register for ChargerStatus {
+    const ADDRESS: RegisterAddress = RegisterAddress::ChargerStatus;
 }
 
 /// Represents the possible output voltage for the `[ChargerConfig0]`
@@ -300,6 +314,7 @@ pub enum ChargeVoltage {
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct ChargerConfig3 {
     /// VBAT_COMP
+    #[skip(setters)]
     pub vbatt_comparator: bool,
 
     /// VBAT0-1
@@ -318,27 +333,35 @@ pub struct ChargerConfig3 {
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct ChargerState {
     /// CH_SUSP
+    #[skip(setters)]
     pub suspended: bool,
 
     /// CH_FAULT
+    #[skip(setters)]
     pub fault: bool,
 
     /// CH_LDO
+    #[skip(setters)]
     pub ldo: bool,
 
     /// CH_CC_CV
+    #[skip(setters)]
     pub constant_current: bool,
 
     /// CH_PRECH
+    #[skip(setters)]
     pub precharge: bool,
 
     /// CH_IDLE
+    #[skip(setters)]
     pub idle: bool,
 
     /// CH_RESET
+    #[skip(setters)]
     pub reset: bool,
 
     /// CH_SLEEP
+    #[skip(setters)]
     pub sleep: bool,
 }
 
@@ -452,9 +475,11 @@ pub struct Control0 {
     pub __: B5,
 
     /// PGOODZ_LDO1
+    #[skip(setters)]
     pub good_ldo_range: bool,
 
     /// PGOODZ_DCDC1
+    #[skip(setters)]
     pub good_dcdc_range: bool,
 
     /// F_PWM
@@ -500,6 +525,7 @@ pub struct Control1 {
     pub push_button_pressed: bool,
 
     /// HOLD
+    #[skip(setters)]
     pub dcdc_ldo_enabled: bool,
 
     /// B6-7 not used
@@ -524,6 +550,7 @@ pub struct Control1 {
     pub push_button_pressed: bool,
 
     /// HOLD
+    #[skip(setters)]
     pub dcdc_ldo_enabled: bool,
 
     /// B6-7 not used
@@ -547,12 +574,15 @@ pub struct GPIOSSC {
     pub gpio0: GPIOPull,
 
     /// GPIO1
+    #[skip(setters)]
     pub gpio1: GPIOPull,
 
     /// GPIO2
+    #[skip(setters)]
     pub gpio2: GPIOPull,
 
     /// GPIO3
+    #[skip(setters)]
     pub gpio3: GPIOPull,
 
     /// B4-7 not used
@@ -700,15 +730,19 @@ pub struct InterruptMask2 {
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Iterrupt0 {
     /// THLOOP
+    #[skip(setters)]
     pub thermal_loop: bool,
 
     /// VBAT_COMP
+    #[skip(setters)]
     pub batt_voltage_comparator: bool,
 
     /// CH_PGOOD
+    #[skip(setters)]
     pub power_source_ok: bool,
 
     /// CH_ACTIVE
+    #[skip(setters)]
     pub charger_active: bool,
 
     /// Bit 4 skipped
@@ -716,12 +750,15 @@ pub struct Iterrupt0 {
     pub __: B1,
 
     /// OVP
+    #[skip(setters)]
     pub over_voltage_protection: bool,
 
     /// TS_COLD
+    #[skip(setters)]
     pub temp_low: bool,
 
     /// TS_HOT
+    #[skip(setters)]
     pub temp_high: bool,
 }
 
@@ -731,27 +768,35 @@ pub struct Iterrupt0 {
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Interrupt1 {
     /// CH_SUSP
+    #[skip(setters)]
     pub suspended: bool,
 
     /// CH_FAULT
+    #[skip(setters)]
     pub fault: bool,
 
     /// CH_LDO
+    #[skip(setters)]
     pub ldo: bool,
 
     /// CH_CC_CV
+    #[skip(setters)]
     pub constant_current: bool,
 
     /// CH_PRECH
+    #[skip(setters)]
     pub precharge: bool,
 
     /// CH_IDLE
+    #[skip(setters)]
     pub idle: bool,
 
     /// CH_RESET
+    #[skip(setters)]
     pub reset: bool,
 
     /// CH_SLEEP
+    #[skip(setters)]
     pub sleep: bool,
 }
 
@@ -765,23 +810,30 @@ pub struct Interrupt2 {
     pub __: B1,
 
     /// PB_STAT
+    #[skip(setters)]
     pub push_button_pressed: bool,
 
     /// PGOODZ_LDO1
+    #[skip(setters)]
     pub ldo_power_source_ok: bool,
 
     /// PGOODZ_DCDC
+    #[skip(setters)]
     pub dcdc_power_source_ok: bool,
 
     /// GPIO0
+    #[skip(setters)]
     pub gpio0: bool,
 
     /// GPIO1
+    #[skip(setters)]
     pub gpio1: bool,
 
     /// GPIO2
+    #[skip(setters)]
     pub gpio2: bool,
 
     /// GPIO3
+    #[skip(setters)]
     pub gpio3: bool,
 }

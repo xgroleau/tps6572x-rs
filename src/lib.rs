@@ -1,11 +1,11 @@
 #![no_std]
 
 pub mod error;
-mod register;
+mod registers;
 
 use embedded_hal::i2c::{blocking::I2c, SevenBitAddress};
 use error::Error;
-use register::*;
+use registers::*;
 
 const TPS_ADDRESS: u8 = 0b100_1000;
 
@@ -22,6 +22,9 @@ where
 {
     pub fn new(i2c: T) -> Self {
         Self { i2c }
+    }
+    pub fn release(self) -> T {
+        self.i2c
     }
 
     fn write_register(&mut self, register: RegisterAddress, val: u8) -> Result<(), Error<E>> {
@@ -44,12 +47,12 @@ where
     }
 
     pub fn get_charger_status(&mut self) -> Result<ChargerStatus, Error<E>> {
-        let val = self.read_register(RegisterAddress::BatteryChargeState)?;
+        let val = self.read_register(RegisterAddress::ChargerStatus)?;
         Ok(val.into())
     }
 
     pub fn get_charger_config_0(&mut self) -> Result<ChargerConfig0, Error<E>> {
-        let val = self.read_register(RegisterAddress::BatteryChargerConfigControl0)?;
+        let val = self.read_register(RegisterAddress::ChargerConfigControl0)?;
         Ok(val.into())
     }
 }
