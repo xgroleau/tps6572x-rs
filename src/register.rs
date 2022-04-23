@@ -379,74 +379,37 @@ pub enum OutputVoltage {
     V1_550 = 30,
     V1_575 = 31,
     V1_600 = 32,
-    V1_625 = 33,
-    V1_650 = 34,
-    V1_675 = 35,
-    V1_700 = 36,
-    V1_725 = 37,
-    V1_750 = 38,
-    V1_775 = 39,
-    V1_800 = 40,
-    V1_825 = 41,
-    V1_850 = 42,
-    V1_875 = 43,
-    V1_900 = 44,
-    V1_925 = 45,
-    V1_950 = 46,
-    V1_975 = 47,
-    V2_000 = 48,
-    V2_025 = 49,
-    V2_050 = 50,
-    V2_075 = 51,
-    V2_100 = 52,
-    V2_125 = 53,
-    V2_150 = 54,
-    V2_175 = 55,
-    V2_200 = 56,
-    V2_225 = 57,
-    V2_250 = 58,
-    V2_275 = 59,
-    V2_300 = 60
-    V2_325 = 0b010010,
-    V2_350 = 0b010010,
-    V2_375 = 0b010010,
-    V2_400 = 0b010010,
-    V2_425 = 0b010010,
-    V2_450 = 0b010010,
-    V2_475 = 0b010010,
-    V2_500 = 0b010010,
-    V2_525 = 0b010010,
-    V2_550 = 0b010010,
-    V2_575 = 0b010010,
-    V2_600 = 0b010010,
-    V2_625 = 0b010010,
-    V2_650 = 0b010010,
-    V2_675 = 0b010010,
-    V2_700 = 0b010010,
-    V2_725 = 0b010010,
-    V2_750 = 0b010010,
-    V2_775 = 0b010010,
-    V2_800 = 0b010010,
-    V2_825 = 0b010010,
-    V2_850 = 0b010010,
-    V2_875 = 0b010010,
-    V2_900 = 0b010010,
-    V2_925 = 0b010010,
-    V2_950 = 0b010010,
-    V2_975 = 0b010010,
-    V3_000 = 0b010010,
-    V3_025 = 0b010010,
-    V3_050 = 0b010010,
-    V3_075 = 0b010010,
-    V3_100 = 0b010010,
-    V3_125 = 0b010010,
-    V3_150 = 0b010010,
-    V3_175 = 0b010010,
-    V3_200 = 0b010010,
-    V3_225 = 0b010010,
-    V3_250 = 0b010010,
-    V3_275 = 0b010010,
-    V3_300 = 0b010010,
+    V1_650 = 33,
+    V1_700 = 34,
+    V1_750 = 35,
+    V1_800 = 36,
+    V1_850 = 37,
+    V1_900 = 38,
+    V1_950 = 39,
+    V2_000 = 40,
+    V2_050 = 41,
+    V2_100 = 42,
+    V2_150 = 43,
+    V2_200 = 44,
+    V2_250 = 45,
+    V2_300 = 46,
+    V2_350 = 47,
+    V2_400 = 48,
+    V2_450 = 49,
+    V2_500 = 50,
+    V2_550 = 51,
+    V2_600 = 52,
+    V2_650 = 53,
+    V2_700 = 54,
+    V2_750 = 55,
+    V2_800 = 56,
+    V2_850 = 57,
+    V2_900 = 58,
+    V2_950 = 59,
+    V3_000 = 60,
+    V3_100 = 61,
+    V3_200 = 62,
+    V3_300 = 63,
 }
 
 /// DEFDCDC1
@@ -462,4 +425,363 @@ pub struct DCDCSetting {
 
     /// HOLD_DCDC1
     pub hold: bool,
+}
+
+/// LDO_CTLG
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct LDOControl {
+    /// LDO1_0-5
+    pub output_voltage: OutputVoltage,
+
+    /// LDO1_DISCH
+    pub discharged_when_disabled: bool,
+
+    /// HOLD_LDO1
+    pub hold: bool,
+}
+
+/// CONTROL0
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Control0 {
+    /// B0-4 not used
+    #[skip]
+    pub __: B5,
+
+    /// PGOODZ_LDO1
+    pub good_ldo_range: bool,
+
+    /// PGOODZ_DCDC1
+    pub good_dcdc_range: bool,
+
+    /// F_PWM
+    pub forced_pwm: bool,
+}
+
+/// Reset delay
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[bits = 1]
+pub enum ResetDelay {
+    Ms11 = 0b0,
+    Ms90 = 0b1,
+}
+
+/// Reset delay
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[bits = 1]
+pub enum OpampMuxMeasurement {
+    BatteryVoltage = 0b0,
+    Temperature = 0b1,
+}
+
+/// CONTROL1
+#[cfg(tps_model = "TPS657201")]
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Control1 {
+    /// RESET_DELAY
+    pub reset_delay: ResetDelay,
+
+    /// OPAMP_EN
+    pub opamp_mux_enabled: bool,
+
+    /// OPAMP_MUX
+    pub opamp_mux_measurement: OpampMuxMeasurement,
+
+    /// B3 not used
+    #[skip]
+    pub __: B1,
+
+    /// PB_STAT
+    pub push_button_pressed: bool,
+
+    /// HOLD
+    pub dcdc_ldo_enabled: bool,
+
+    /// B6-7 not used
+    #[skip]
+    pub __: B2,
+}
+
+#[cfg(not(tps_model = "TPS657201"))]
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Control1 {
+    /// RESET_DELAY
+    pub reset_delay: ResetDelay,
+
+    /// B1-3 not used
+    #[cfg(not(tps_model = "TPS657201"))]
+    #[skip]
+    pub __: B3,
+
+    /// PB_STAT
+    pub push_button_pressed: bool,
+
+    /// HOLD
+    pub dcdc_ldo_enabled: bool,
+
+    /// B6-7 not used
+    #[skip]
+    pub __: B2,
+}
+
+/// GPIO mode
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[bits = 1]
+pub enum GPIOPull {
+    PullLowLedDriver = 0b0,
+    HighImpedence = 0b1,
+}
+
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct GPIOSSC {
+    /// GPIO0
+    pub gpio0: GPIOPull,
+
+    /// GPIO1
+    pub gpio1: GPIOPull,
+
+    /// GPIO2
+    pub gpio2: GPIOPull,
+
+    /// GPIO3
+    pub gpio3: GPIOPull,
+
+    /// B4-7 not used
+    #[skip]
+    pub __: B4,
+}
+
+/// GPIO input/output mode
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[bits = 1]
+pub enum GPIOMode {
+    Ouput = 0b0,
+    Input = 0b1,
+}
+
+/// GPIO drive
+#[derive(Copy, Clone, PartialEq, Debug, BitfieldSpecifier)]
+#[bits = 1]
+pub enum GPIODrive {
+    StandardGPIO = 0b0,
+    LedDriver5mA = 0b1,
+}
+
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct GPIOConfigControl {
+    /// GPIO0_DIR
+    pub gpio0: GPIOMode,
+
+    /// GPIO1_DIR
+    pub gpio1: GPIOMode,
+
+    /// GPIO2_DIR
+    pub gpio2: GPIOMode,
+
+    /// GPIO3_DIR
+    pub gpio3: GPIOMode,
+
+    /// B4-5 not used
+    #[skip]
+    pub __: B2,
+
+    /// GPIO2_LED
+    pub gpio2_led: GPIODrive,
+
+    /// GPIO3_LED
+    pub gpio3_led: GPIODrive,
+}
+
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct IterruptMask0 {
+    /// M_THLOOP
+    pub thermal_loop_interrupt: bool,
+
+    /// M_VBAT_COMP
+    pub batt_voltage_comparator_interrupt: bool,
+
+    /// M_CH_PGOOD
+    pub power_source_ok_interrupt: bool,
+
+    /// M_CH_ACTIVE
+    pub charger_active: bool,
+
+    /// Bit 4 skipped
+    #[skip]
+    pub __: B1,
+
+    /// M_OVP
+    pub over_voltage_protection_interrupt: bool,
+
+    /// M_TS_COLD
+    pub temp_low_interrupt: bool,
+
+    /// M_TS_HOT
+    pub temp_high_interrupt: bool,
+}
+
+/// IRMASK1 register
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct InterruptMask1 {
+    /// M_CH_SUSP
+    pub suspended_interrupt: bool,
+
+    /// M_CH_FAULT
+    pub fault_interrupt: bool,
+
+    /// M_CH_LDO
+    pub ldo_interrupt: bool,
+
+    /// M_CH_CC_CV
+    pub constant_current_interrupt: bool,
+
+    /// M_CH_PRECH
+    pub precharge_interrupt: bool,
+
+    /// M_CH_IDLE
+    pub idle_interrupt: bool,
+
+    /// M_CH_RESET
+    pub reset_interrupt: bool,
+
+    /// M_CH_SLEEP
+    pub sleep_interrupt: bool,
+}
+
+/// IRMASK2 register
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct InterruptMask2 {
+    /// B0 skipped
+    #[skip]
+    pub __: B1,
+
+    /// M_PB_STAT
+    pub push_button_pressed_interrupt: bool,
+
+    /// M_PGOODZ_LDO1
+    pub ldo_power_source_ok_interrupt: bool,
+
+    /// M_PGOODZ_DCDC
+    pub dcdc_power_source_ok_interrupt: bool,
+
+    /// M_GPIO0
+    pub gpio0_interrupt: bool,
+
+    /// M_GPIO1
+    pub gpio1_interrupt: bool,
+
+    /// M_GPIO2
+    pub gpio2_interrupt: bool,
+
+    /// M_GPIO3
+    pub gpio3_interrupt: bool,
+}
+
+/// IR0 register
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Iterrupt0 {
+    /// THLOOP
+    pub thermal_loop: bool,
+
+    /// VBAT_COMP
+    pub batt_voltage_comparator: bool,
+
+    /// CH_PGOOD
+    pub power_source_ok: bool,
+
+    /// CH_ACTIVE
+    pub charger_active: bool,
+
+    /// Bit 4 skipped
+    #[skip]
+    pub __: B1,
+
+    /// OVP
+    pub over_voltage_protection: bool,
+
+    /// TS_COLD
+    pub temp_low: bool,
+
+    /// TS_HOT
+    pub temp_high: bool,
+}
+
+/// IR1 register
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Interrupt1 {
+    /// CH_SUSP
+    pub suspended: bool,
+
+    /// CH_FAULT
+    pub fault: bool,
+
+    /// CH_LDO
+    pub ldo: bool,
+
+    /// CH_CC_CV
+    pub constant_current: bool,
+
+    /// CH_PRECH
+    pub precharge: bool,
+
+    /// CH_IDLE
+    pub idle: bool,
+
+    /// CH_RESET
+    pub reset: bool,
+
+    /// CH_SLEEP
+    pub sleep: bool,
+}
+
+/// IR2 register
+#[bitfield]
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub struct Interrupt2 {
+    /// B0 skipped
+    #[skip]
+    pub __: B1,
+
+    /// PB_STAT
+    pub push_button_pressed: bool,
+
+    /// PGOODZ_LDO1
+    pub ldo_power_source_ok: bool,
+
+    /// PGOODZ_DCDC
+    pub dcdc_power_source_ok: bool,
+
+    /// GPIO0
+    pub gpio0: bool,
+
+    /// GPIO1
+    pub gpio1: bool,
+
+    /// GPIO2
+    pub gpio2: bool,
+
+    /// GPIO3
+    pub gpio3: bool,
 }
