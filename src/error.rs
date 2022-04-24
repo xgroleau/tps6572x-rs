@@ -1,9 +1,21 @@
-/// All possible errors emitted by the driver
+/// Possible error when reading an register error
 #[derive(Debug, Clone, Copy)]
-pub enum Error<I2cError> {
+pub enum RegisterError<I2CError> {
     /// Internal i2c error
-    I2c(I2cError),
+    I2c(I2CError),
+}
 
-    /// Cannot decode value
-    UnexpectedValue,
+#[derive(Debug, Clone, Copy)]
+pub enum StuffError<LDOError, DCDCError, RSTError, INTError> {
+    /// Internal HOLD_LDO pin error
+    LDO(LDOError),
+
+    /// Internal HOLD_DCDC pin error
+    DCDC(DCDCError),
+
+    /// Internal reset pin error
+    Reset(RSTError),
+
+    /// Internal interrupt pin error
+    Interrupt(INTError),
 }
