@@ -1,4 +1,5 @@
 use proc_macro::TokenStream;
+use proc_macro2::TokenTree;
 use quote::{quote, TokenStreamExt};
 use syn;
 
@@ -8,14 +9,16 @@ pub fn read_register(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
 
     // Build the impl
-    impl_read_register(&ast)
+    let output = impl_read_register(&ast);
+    output.into()
 }
 
-fn impl_read_register(ast: &syn::DeriveInput) -> TokenStream {
+fn impl_read_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     let name = &ast.ident;
     quote! {
-        impl Register for #name {
-            const ADDRESS: RegisterAddress = RegisterAddress::#name;
+        #[allow(dead_code)]
+        impl crate::registers::Register for #name {
+            const ADDRESS: crate::registers::RegisterAddress = crate::registers::RegisterAddress::#name;
         }
     }
     .into()
@@ -30,14 +33,17 @@ pub fn write_register(input: TokenStream) -> TokenStream {
     let read = impl_read_register(&ast);
     let write = impl_write_register(&ast);
 
-    // Concat read and write
-    read.append(write);
-    read
+    let read_write = quote! {
+        #read
+        #write
+    };
+    read_write.into()
 }
-fn impl_write_register(ast: &syn::DeriveInput) -> TokenStream {
+fn impl_write_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     let name = &ast.ident;
     quote! {
-        impl WritableRegister for #name {}
+        #[allow(dead_code)]
+        impl crate::registers::WritableRegister for #name {}
     }
     .into()
 }

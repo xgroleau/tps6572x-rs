@@ -1,4 +1,5 @@
 use modular_bitfield::prelude::*;
+use register_macros::{ReadRegister, WriteRegister};
 
 trait Register {
     const ADDRESS: RegisterAddress;
@@ -66,7 +67,7 @@ pub enum RegisterAddress {
 /// CHGSTATUS register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, WriteRegister)]
 pub struct ChargerStatus {
     /// Bit 0 skipped
     #[skip]
@@ -99,9 +100,6 @@ pub struct ChargerStatus {
     /// TS_HOT
     #[skip(setters)]
     pub temp_high: bool,
-}
-impl Register for ChargerStatus {
-    const ADDRESS: RegisterAddress = RegisterAddress::ChargerStatus;
 }
 
 /// Represents the possible output voltage for the `[ChargerConfig0]`
