@@ -9,7 +9,7 @@ use registers::*;
 
 const TPS_ADDRESS: u8 = 0b100_1000;
 
-struct TPS6572x<T, E>
+pub struct TPS6572x<T, E>
 where
     T: I2c<SevenBitAddress, Error = E>,
 {
@@ -27,7 +27,7 @@ where
         self.i2c
     }
 
-    fn write_register<R>(&mut self, register: R) -> Result<(), Error<E>>
+    pub fn write_register<R>(&mut self, register: R) -> Result<(), Error<E>>
     where
         R: WritableRegister,
         u8: From<R>,
@@ -41,7 +41,7 @@ where
         Ok(())
     }
 
-    fn read_register<R>(&mut self) -> Result<R, Error<E>>
+    pub fn read_register<R>(&mut self) -> Result<R, Error<E>>
     where
         R: Register + From<u8>,
     {
@@ -51,5 +51,16 @@ where
             .map_err(Error::I2c)?;
         self.i2c.write(TPS_ADDRESS, &mut val).map_err(Error::I2c)?;
         Ok(val[0].into())
+    }
+
+    pub fn edit_register<R, F>(&mut self, f: F) -> Result<(), Error<E>>
+    where
+        F: FnOnce(R) -> R,
+        R: WritableRegister + From<u8>,
+        u8: From<R>,
+    {
+        let val = self.read_register::<R>()?;
+        let new_val = f(val);
+        self.write_register(new_val)
     }
 }
