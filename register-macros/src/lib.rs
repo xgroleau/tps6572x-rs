@@ -1,19 +1,18 @@
 use proc_macro::TokenStream;
-use proc_macro2::TokenTree;
-use quote::{quote, TokenStreamExt};
+use quote::quote;
 use syn;
 
-#[proc_macro_derive(ReadRegister)]
-pub fn read_register(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(RORegister)]
+pub fn ro_register(input: TokenStream) -> TokenStream {
     // Parse the representation
     let ast = syn::parse(input).unwrap();
 
     // Build the impl
-    let output = impl_read_register(&ast);
+    let output = impl_ro_register(&ast);
     output.into()
 }
 
-fn impl_read_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
+fn impl_ro_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     let name = &ast.ident;
     quote! {
         #[allow(dead_code)]
@@ -24,14 +23,14 @@ fn impl_read_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     .into()
 }
 
-#[proc_macro_derive(WriteRegister)]
-pub fn write_register(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(RWRegister)]
+pub fn rw_register(input: TokenStream) -> TokenStream {
     // Parse the representation
     let ast = syn::parse(input).unwrap();
 
     // Build the impl
-    let read = impl_read_register(&ast);
-    let write = impl_write_register(&ast);
+    let read = impl_ro_register(&ast);
+    let write = impl_rw_register(&ast);
 
     let read_write = quote! {
         #read
@@ -39,7 +38,7 @@ pub fn write_register(input: TokenStream) -> TokenStream {
     };
     read_write.into()
 }
-fn impl_write_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
+fn impl_rw_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     let name = &ast.ident;
     quote! {
         #[allow(dead_code)]

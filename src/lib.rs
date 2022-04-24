@@ -27,32 +27,29 @@ where
         self.i2c
     }
 
-    fn write_register(&mut self, register: RegisterAddress, val: u8) -> Result<(), Error<E>> {
+    fn write_register<R>(&mut self, register: R) -> Result<(), Error<E>>
+    where
+        R: WritableRegister,
+        u8: From<R>,
+    {
         self.i2c
-            .write(TPS_ADDRESS, &[register as u8])
+            .write(TPS_ADDRESS, &[R::ADDRESS as u8])
             .map_err(Error::I2c)?;
         self.i2c
-            .write(TPS_ADDRESS, &[val as u8])
+            .write(TPS_ADDRESS, &[register.into()])
             .map_err(Error::I2c)?;
         Ok(())
     }
 
-    fn read_register(&mut self, register: RegisterAddress) -> Result<u8, Error<E>> {
+    fn read_register<R>(&mut self) -> Result<R, Error<E>>
+    where
+        R: Register + From<u8>,
+    {
         let mut val: [u8; 1] = [0; 1];
         self.i2c
-            .write(TPS_ADDRESS, &[register as u8])
+            .write(TPS_ADDRESS, &[R::ADDRESS as u8])
             .map_err(Error::I2c)?;
         self.i2c.write(TPS_ADDRESS, &mut val).map_err(Error::I2c)?;
-        Ok(val[0])
-    }
-
-    pub fn get_charger_status(&mut self) -> Result<ChargerStatus, Error<E>> {
-        let val = self.read_register(RegisterAddress::ChargerStatus)?;
-        Ok(val.into())
-    }
-
-    pub fn get_charger_config_0(&mut self) -> Result<ChargerConfig0, Error<E>> {
-        let val = self.read_register(RegisterAddress::ChargerConfigControl0)?;
-        Ok(val.into())
+        Ok(val[0].into())
     }
 }

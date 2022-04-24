@@ -1,37 +1,37 @@
 use modular_bitfield::prelude::*;
-use register_macros::{ReadRegister, WriteRegister};
+use register_macros::{RORegister, RWRegister};
 
-trait Register {
+pub trait Register {
     const ADDRESS: RegisterAddress;
 }
-trait WritableRegister: Register {}
+pub trait WritableRegister: Register {}
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(u8)]
 pub enum RegisterAddress {
     /// CHGSTATUS
-    BatteryChargerStatus = 0x01,
+    ChargerStatus = 0x01,
 
     /// CHGCONFIGG0
-    ChargerConfigControl0 = 0x02,
+    ChargerConfig0 = 0x02,
 
     /// CHGCONFIGG1
-    BatteryChargerConfigControl1 = 0x03,
+    ChargerConfig1 = 0x03,
 
     /// CHGCONFIGG2
-    BatteryChargerConfigControl2 = 0x04,
+    ChargerConfig2 = 0x04,
 
     /// CHGCONFIGG3
-    BatteryChargerConfigControl3 = 0x05,
+    ChargerConfig3 = 0x05,
 
     /// CHGSTATE
-    ChargerStatus = 0x06,
+    ChargerState = 0x06,
 
     /// DEFDCDC1
-    DCDCSettingControl = 0x07,
+    DCDCSetting = 0x07,
 
     /// LDOCTRL
-    LDOSettingControl = 0x08,
+    LDOControl = 0x08,
 
     /// CONTROL0
     Control0 = 0x09,
@@ -39,8 +39,8 @@ pub enum RegisterAddress {
     /// CONTROL1
     Control1 = 0x0A,
 
-    /// GPIOSCC
-    GPIOSCC = 0x0B,
+    /// GPIOSSC
+    GPIOSSC = 0x0B,
 
     /// GPIODIR
     GPIOConfigControl = 0x0C,
@@ -55,19 +55,19 @@ pub enum RegisterAddress {
     InterruptMask2 = 0xF0,
 
     /// IR0
-    InterruptReporting0 = 0x10,
+    Interrupt0 = 0x10,
 
     /// IR1
-    InterruptReporting1 = 0x11,
+    Interrupt1 = 0x11,
 
     /// IR2
-    InterruptReporting2 = 0x12,
+    Interrupt2 = 0x12,
 }
 
 /// CHGSTATUS register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug, WriteRegister)]
+#[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct ChargerStatus {
     /// Bit 0 skipped
     #[skip]
@@ -139,7 +139,7 @@ pub enum AcInputCurrent {
 /// CHGCONFIG0 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig0 {
     /// CH_EN
     pub charger_enabled: bool,
@@ -193,7 +193,7 @@ pub enum PreChargeCurrentFactor {
 /// CHGCONFIG1 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig1 {
     /// Skip B0 and B1
     #[skip]
@@ -246,7 +246,7 @@ pub enum SafetyChargeTimer {
 /// CHGCONFIG2 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig2 {
     /// Skip B0
     #[skip]
@@ -309,7 +309,7 @@ pub enum ChargeVoltage {
 /// CHGCONFIG3 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig3 {
     /// VBAT_COMP
     #[skip(setters)]
@@ -328,7 +328,7 @@ pub struct ChargerConfig3 {
 /// CHGSTATE register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct ChargerState {
     /// CH_SUSP
     #[skip(setters)]
@@ -436,7 +436,7 @@ pub enum OutputVoltage {
 /// DEFDCDC1
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct DCDCSetting {
     /// DCDC0_5
     pub output_voltage: OutputVoltage,
@@ -451,7 +451,7 @@ pub struct DCDCSetting {
 /// LDO_CTLG
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct LDOControl {
     /// LDO1_0-5
     pub output_voltage: OutputVoltage,
@@ -466,7 +466,7 @@ pub struct LDOControl {
 /// CONTROL0
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control0 {
     /// B0-4 not used
     #[skip]
@@ -504,7 +504,7 @@ pub enum OpampMuxMeasurement {
 #[cfg(tps_model = "TPS657201")]
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control1 {
     /// RESET_DELAY
     pub reset_delay: ResetDelay,
@@ -534,7 +534,7 @@ pub struct Control1 {
 #[cfg(not(tps_model = "TPS657201"))]
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control1 {
     /// RESET_DELAY
     pub reset_delay: ResetDelay,
@@ -564,9 +564,10 @@ pub enum GPIOPull {
     HighImpedence = 0b1,
 }
 
+/// GPIOSSC
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct GPIOSSC {
     /// GPIO0
     pub gpio0: GPIOPull,
@@ -606,7 +607,7 @@ pub enum GPIODrive {
 
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct GPIOConfigControl {
     /// GPIO0_DIR
     pub gpio0: GPIOMode,
@@ -633,8 +634,8 @@ pub struct GPIOConfigControl {
 
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub struct IterruptMask0 {
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
+pub struct InterruptMask0 {
     /// M_THLOOP
     pub thermal_loop_interrupt: bool,
 
@@ -664,7 +665,7 @@ pub struct IterruptMask0 {
 /// IRMASK1 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct InterruptMask1 {
     /// M_CH_SUSP
     pub suspended_interrupt: bool,
@@ -694,7 +695,7 @@ pub struct InterruptMask1 {
 /// IRMASK2 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct InterruptMask2 {
     /// B0 skipped
     #[skip]
@@ -725,8 +726,8 @@ pub struct InterruptMask2 {
 /// IR0 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub struct Iterrupt0 {
+#[derive(Copy, Clone, PartialEq, Debug, RORegister)]
+pub struct Interrupt0 {
     /// THLOOP
     #[skip(setters)]
     pub thermal_loop: bool,
@@ -763,7 +764,7 @@ pub struct Iterrupt0 {
 /// IR1 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct Interrupt1 {
     /// CH_SUSP
     #[skip(setters)]
@@ -801,7 +802,7 @@ pub struct Interrupt1 {
 /// IR2 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct Interrupt2 {
     /// B0 skipped
     #[skip]
