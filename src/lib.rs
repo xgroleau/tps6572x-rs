@@ -3,31 +3,33 @@
 pub mod error;
 mod registers;
 
-use embedded_hal::i2c::{blocking::I2c, SevenBitAddress};
+use embedded_hal::{
+    i2c::{blocking::I2c, SevenBitAddress},
+};
 use error::Error;
 use registers::*;
 
 const TPS_ADDRESS: u8 = 0b100_1000;
 
-pub struct TPS6572x<T, E>
+pub struct TPS6572x<I2C, I2CE>
 where
-    T: I2c<SevenBitAddress, Error = E>,
+    I2C: I2c<SevenBitAddress, Error = I2CE>,
 {
-    i2c: T,
+    i2c: I2C,
 }
 
-impl<T, E> TPS6572x<T, E>
+impl<I2C, I2CE> TPS6572x<I2C, I2CE>
 where
-    T: I2c<SevenBitAddress, Error = E>,
+    I2C: I2c<SevenBitAddress, Error = I2CE>,
 {
-    pub fn new(i2c: T) -> Self {
+    pub fn new(i2c: I2C) -> Self {
         Self { i2c }
     }
-    pub fn release(self) -> T {
+    pub fn release(self) -> I2C {
         self.i2c
     }
 
-    pub fn write_register<R>(&mut self, register: R) -> Result<(), Error<E>>
+    pub fn write_register<R>(&mut self, register: R) -> Result<(), Error<I2CE>>
     where
         R: WritableRegister,
         u8: From<R>,
@@ -41,7 +43,7 @@ where
         Ok(())
     }
 
-    pub fn read_register<R>(&mut self) -> Result<R, Error<E>>
+    pub fn read_register<R>(&mut self) -> Result<R, Error<I2CE>>
     where
         R: Register + From<u8>,
     {
@@ -53,7 +55,7 @@ where
         Ok(val[0].into())
     }
 
-    pub fn edit_register<R, F>(&mut self, f: F) -> Result<(), Error<E>>
+    pub fn edit_register<R, F>(&mut self, f: F) -> Result<(), Error<I2CE>>
     where
         F: FnOnce(R) -> R,
         R: WritableRegister + From<u8>,

@@ -1,9 +1,6 @@
-/// All possible errors emitted by the driver
+/// Possible error when reading an register error
 #[derive(Debug, Clone, Copy)]
-pub enum Error<I2cError> {
+pub enum Error<I2CError> {
     /// Internal i2c error
-    I2c(I2cError),
-
-    /// Cannot decode value
-    UnexpectedValue,
+    I2c(I2CError),
 }
