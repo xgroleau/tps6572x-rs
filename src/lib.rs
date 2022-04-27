@@ -3,9 +3,7 @@
 pub mod error;
 pub mod registers;
 
-use embedded_hal::{
-    i2c::{blocking::I2c, SevenBitAddress},
-};
+use embedded_hal::i2c::{blocking::I2c, SevenBitAddress};
 use error::Error;
 use registers::*;
 
@@ -35,10 +33,7 @@ where
         u8: From<R>,
     {
         self.i2c
-            .write(TPS_ADDRESS, &[R::ADDRESS as u8])
-            .map_err(Error::I2c)?;
-        self.i2c
-            .write(TPS_ADDRESS, &[register.into()])
+            .write(TPS_ADDRESS, &[R::ADDRESS as u8, register.into()])
             .map_err(Error::I2c)?;
         Ok(())
     }
@@ -51,7 +46,7 @@ where
         self.i2c
             .write(TPS_ADDRESS, &[R::ADDRESS as u8])
             .map_err(Error::I2c)?;
-        self.i2c.write(TPS_ADDRESS, &mut val).map_err(Error::I2c)?;
+        self.i2c.read(TPS_ADDRESS, &mut val).map_err(Error::I2c)?;
         Ok(val[0].into())
     }
 

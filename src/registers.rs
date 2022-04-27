@@ -43,7 +43,7 @@ pub enum RegisterAddress {
     GPIOSSC = 0x0B,
 
     /// GPIODIR
-    GPIOConfigControl = 0x0C,
+    GPIOConfig = 0x0C,
 
     /// IRMARSK0
     InterruptMask0 = 0xD0,
@@ -620,7 +620,7 @@ pub enum GPIODrive {
 #[repr(u8)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
-pub struct GPIOConfigControl {
+pub struct GPIOConfig {
     /// GPIO0_DIR
     pub gpio0: GPIOMode,
 

@@ -47,11 +47,3 @@ fn impl_rw_register(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
     .into()
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
-}

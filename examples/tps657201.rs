@@ -2,19 +2,16 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-use embassy::{
-    executor::Spawner,
-};
-use embassy_nrf::{
-    interrupt,
-    twim, Peripherals,
-};
+use defmt::info;
+use defmt_rtt as _;
+use embassy::executor::Spawner;
+use embassy_nrf::{interrupt, twim, Peripherals};
 use panic_probe as _;
-use tps6572x::{TPS6572x, registers::*};
-
+use tps6572x::{registers::*, TPS6572x};
 
 #[embassy::main]
 async fn main(_spawner: Spawner, p: Peripherals) {
+    info!("Started test");
     let config = twim::Config::default();
     let irq = interrupt::take!(SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0);
 
@@ -22,20 +19,28 @@ async fn main(_spawner: Spawner, p: Peripherals) {
 
     let mut tps = TPS6572x::new(twi);
 
+    // Read the register
     let cfg0_initial = tps.read_register::<ChargerConfig0>().unwrap();
 
     let mut cfg0 = cfg0_initial.clone();
+
+    // Edit the register
     cfg0.set_charger_enabled(!cfg0.charger_enabled());
 
+    // Write the new value
     tps.write_register(cfg0).unwrap();
 
+    // Read the new value, compare and revert the changes
     tps.edit_register::<ChargerConfig0, _>(|mut r| {
         assert!(cfg0 == r);
         r.set_charger_enabled(!r.charger_enabled());
         r
-    }).unwrap();
+    })
+    .unwrap();
 
+    // Check that the value is now the initial value
     assert!(cfg0_initial == tps.read_register::<ChargerConfig0>().unwrap());
-    
 
+    info!("Example successfully completed");
+    cortex_m::asm::bkpt();
 }
