@@ -20,7 +20,7 @@ exclude = [
 
 [dependencies]
 # TODO: Migrate to embedded-hal repo
-embedded-hal = { version = "1.0.0-alpha.7", git = "https://github.com/embassy-rs/embedded-hal", branch = "embassy2" }
+embedded-hal = { version = "1.0.0-alpha.8" }
 bit = "0.1.1"
 defmt = { version = "0.3", optional = true }
 modular-bitfield = "0.11.2"
@@ -29,10 +29,10 @@ register-macros = { path = "register-macros", version = "0.1.0" }
 [dev-dependencies]
 cortex-m = "0.7.3"
 cortex-m-rt = "0.7.0"
+embassy = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy",  features = [ "nightly", "unstable-traits"] }
+embassy-nrf = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy",  features = [ "nrf52840", "time-driver-rtc1", "gpiote", "unstable-traits", "nightly"] }
 
-defmt = "0.3"
-defmt-rtt = "0.3"
-panic-probe = { version = "0.3", features = ["print-defmt"] }
+panic-probe = { version = "0.3" }
 
 [profile.release]
 lto = true
