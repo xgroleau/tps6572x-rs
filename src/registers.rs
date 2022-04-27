@@ -67,6 +67,7 @@ pub enum RegisterAddress {
 /// CHGSTATUS register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct ChargerStatus {
     /// Bit 0 skipped
@@ -139,6 +140,7 @@ pub enum AcInputCurrent {
 /// CHGCONFIG0 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig0 {
     /// CH_EN
@@ -193,7 +195,7 @@ pub enum PreChargeCurrentFactor {
 /// CHGCONFIG1 register
 #[bitfield]
 #[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct ChargerConfig1 {
     /// Skip B0 and B1
     #[skip]
@@ -246,6 +248,7 @@ pub enum SafetyChargeTimer {
 /// CHGCONFIG2 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig2 {
     /// Skip B0
@@ -309,6 +312,7 @@ pub enum ChargeVoltage {
 /// CHGCONFIG3 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct ChargerConfig3 {
     /// VBAT_COMP
@@ -328,6 +332,7 @@ pub struct ChargerConfig3 {
 /// CHGSTATE register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct ChargerState {
     /// CH_SUSP
@@ -436,6 +441,7 @@ pub enum OutputVoltage {
 /// DEFDCDC1
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct DCDCSetting {
     /// DCDC0_5
@@ -451,6 +457,7 @@ pub struct DCDCSetting {
 /// LDO_CTLG
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct LDOControl {
     /// LDO1_0-5
@@ -466,6 +473,7 @@ pub struct LDOControl {
 /// CONTROL0
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control0 {
     /// B0-4 not used
@@ -504,6 +512,7 @@ pub enum OpampMuxMeasurement {
 #[cfg(tps_model = "TPS657201")]
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control1 {
     /// RESET_DELAY
@@ -534,6 +543,7 @@ pub struct Control1 {
 #[cfg(not(tps_model = "TPS657201"))]
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct Control1 {
     /// RESET_DELAY
@@ -567,6 +577,7 @@ pub enum GPIOPull {
 /// GPIOSSC
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct GPIOSSC {
     /// GPIO0
@@ -607,6 +618,7 @@ pub enum GPIODrive {
 
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct GPIOConfigControl {
     /// GPIO0_DIR
@@ -634,6 +646,7 @@ pub struct GPIOConfigControl {
 
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct InterruptMask0 {
     /// M_THLOOP
@@ -665,6 +678,7 @@ pub struct InterruptMask0 {
 /// IRMASK1 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct InterruptMask1 {
     /// M_CH_SUSP
@@ -695,6 +709,7 @@ pub struct InterruptMask1 {
 /// IRMASK2 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RWRegister)]
 pub struct InterruptMask2 {
     /// B0 skipped
@@ -726,6 +741,7 @@ pub struct InterruptMask2 {
 /// IR0 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct Interrupt0 {
     /// THLOOP
@@ -764,6 +780,7 @@ pub struct Interrupt0 {
 /// IR1 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct Interrupt1 {
     /// CH_SUSP
@@ -802,6 +819,7 @@ pub struct Interrupt1 {
 /// IR2 register
 #[bitfield]
 #[repr(u8)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Copy, Clone, PartialEq, Debug, RORegister)]
 pub struct Interrupt2 {
     /// B0 skipped

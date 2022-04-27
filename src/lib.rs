@@ -1,7 +1,7 @@
 #![no_std]
 
 pub mod error;
-mod registers;
+pub mod registers;
 
 use embedded_hal::{
     i2c::{blocking::I2c, SevenBitAddress},
