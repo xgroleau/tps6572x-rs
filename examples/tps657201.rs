@@ -20,15 +20,12 @@ async fn main(_spawner: Spawner, p: Peripherals) {
     let mut tps = TPS6572x::new(twi);
 
     // Read the register
-    let cfg0_initial = tps.read_register::<ChargerConfig0>().unwrap();
-
-    let mut cfg0 = cfg0_initial.clone();
-
-    // Edit the register
-    cfg0.set_charger_enabled(!cfg0.charger_enabled());
+    let cfg0: ChargerConfig0 = tps.read_register().unwrap();
 
     // Write the new value
-    tps.write_register(cfg0).unwrap();
+    let test = ChargerConfig0::new();
+    test.with_charger_enabled(true);
+    tps.write_register(test).unwrap();
 
     // Read the new value, compare and revert the changes
     tps.edit_register::<ChargerConfig0, _>(|mut r| {
@@ -39,7 +36,7 @@ async fn main(_spawner: Spawner, p: Peripherals) {
     .unwrap();
 
     // Check that the value is now the initial value
-    assert!(cfg0_initial == tps.read_register::<ChargerConfig0>().unwrap());
+    assert!(cfg0 == tps.read_register::<ChargerConfig0>().unwrap());
 
     info!("Example successfully completed");
     cortex_m::asm::bkpt();
